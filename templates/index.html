@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<section class="hero">
+    <h2>Clasificador de Exoplanetas</h2>
+    <p>Selecciona la base de datos que quieres usar para la predicción.</p>
+    <div class="actions">
+        <a href="{{ url_for('classify_dataset', dataset='kepler') }}" class="btn">Kepler</a>
+        <a href="{{ url_for('classify_dataset', dataset='tess') }}" class="btn">TESS</a>
+        <a href="{{ url_for('classify_dataset', dataset='k2') }}" class="btn">K2</a>
+    </div>
+</section>
+{% endblock %}

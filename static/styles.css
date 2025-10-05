@@ -1,0 +1,58 @@
+/* Basic reset */
+* { box-sizing: border-box; }
+body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; color:#222; background: #f6f8fb; }
+.container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+/* Header */
+.site-header { background: linear-gradient(90deg,#081a4d,#153a6b); color: #fff; padding: 1rem 0; box-shadow: 0 3px 12px rgba(15,23,42,0.08); }
+.header-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.brand h1 { margin:0; font-size:1.25rem; }
+.brand .tag { margin:0; font-size:0.85rem; opacity:0.9; }
+.main-nav a { color:#e6f0ff; text-decoration:none; margin-left:1rem; font-weight:600; }
+.main-nav a:hover { text-decoration:underline; }
+
+/* Hero */
+.hero { text-align:center; padding:2.5rem 1rem; background: linear-gradient(180deg,#f7fbff00,#ffffff); border-radius:8px; margin:1rem 0; }
+.actions { display:flex; justify-content:center; gap:1rem; margin-top:1rem; }
+
+/* Buttons */
+.btn { display:inline-block; padding:0.6rem 1rem; border-radius:8px; background:#2b7aef; color:#fff; text-decoration:none; font-weight:700; border: none; cursor:pointer; }
+.btn:hover { filter:brightness(0.95); }
+.btn.primary { background:#1f6ad1; }
+
+/* Cards and layout */
+.card { background:#fff; border-radius:8px; padding:1rem; box-shadow:0 6px 18px rgba(20,30,60,0.06); margin:1rem 0; }
+.card.small { flex:1; }
+.cards { display:flex; gap:1rem; align-items:flex-start; margin:1rem 0; }
+@media (max-width:800px){ .cards { flex-direction:column; } .header-inner{flex-direction:column;align-items:flex-start;} }
+
+/* Notes / callouts */
+.note, .callout { padding:0.75rem 1rem; border-radius:6px; background:#fff; border-left:4px solid #d0d7df; margin:0.75rem 0; }
+.callout.info { border-left-color:#4a90e2; background:#f0f7ff; }
+.callout.note { border-left-color:#2b7a78; background:#f7fffe; }
+.ok { color: #0b704b; font-weight:600; }
+.muted { color:#58606a; }
+.small { font-size:0.9rem; }
+.feature-list { columns:2; padding-left:1rem; }
+
+/* Forms */
+.csv-form, .form-row { margin:0.5rem 0; }
+input[type=file] { padding:0.35rem; }
+.checkbox-row label { font-size:0.95rem; }
+
+/* Sample table */
+.sample-table table { width:100%; border-collapse:collapse; }
+.sample-table th, .sample-table td { border:1px solid #eee; padding:0.35rem 0.5rem; font-size:0.9rem; }
+
+/* DataTables wrapper tweaks */
+.table-wrap { background:#fff; padding:0.75rem; border-radius:8px; box-shadow:0 6px 18px rgba(20,30,60,0.04); }
+#myTable { width:100%; }
+
+/* Footer */
+.site-footer { padding:1rem 0; margin-top:2rem; color:#5a6470; }
+
+/* Utilities */
+.code { background:#0f1724; color:#e6f0ff; padding:0.15rem 0.4rem; border-radius:4px; font-family:monospace; }
+
+/* Make tables responsive */
+@media (max-width:900px){ .feature-list { columns:1; } .main-nav a{margin-left:0.5rem;} }

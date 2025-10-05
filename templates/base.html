@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- DataTables (available on all pages for sortable/interactive tables) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+    <title>{% block title %}{% endblock %} - Exoplanet Classifier</title>
+    {% block scripts %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">
+                <h1>Exoplanet Classifier</h1>
+                <p class="tag">Clasifica exoplanetas con un modelo LDA/Boosting</p>
+            </div>
+            <nav class="main-nav">
+                <a href="{{ url_for('home') }}">Inicio</a>
+                <a href="{{ url_for('classify_dataset', dataset='kepler') }}">Subir CSV</a>
+                <!-- Resultados requiere un UUID; redirige al formulario para ver resultados tras subir -->
+                <a href="{{ url_for('classify_dataset', dataset='kepler') }}">Resultados</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>&copy; 2024 Exoplanet Classifier | Powered by LDA / Boosting pipelines</small>
+        </div>
+    </footer>
+
+    <!-- Load jQuery and DataTables and initialize any table with class 'display' -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+    <script>
+        // Initialize DataTables for any table with class 'display' when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (window.jQuery && $.fn.DataTable) {
+                    $('.display').DataTable({
+                        pageLength: 10,
+                        responsive: true,
+                        order: [[0, 'asc']]
+                    });
+                }
+            } catch (e) {
+                console.warn('DataTables init error', e);
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Subir CSV{% endblock %}
+{% block content %}
+<section class="card">
+    <h2>Subir un archivo CSV</h2>
+    {% if dataset %}
+    <p class="muted"><strong>Dataset seleccionado:</strong> {{ dataset|upper }}</p>
+    <p class="muted"><em>Se intentará usar el pipeline de boosting: <code>boost_{{ dataset }}.joblib</code></em></p>
+    {% endif %}
+
+    {% if features_required %}
+    <div class="note">
+        <p><strong>Nota:</strong> El servidor requiere exactamente estas columnas para usar el <em>modelo compacto</em> (reentrenado con {{ minimal_feature_count }} variables):</p>
+        <ul class="feature-list">
+        {% for f in features_required %}
+            <li>{{ f }}</li>
+        {% endfor %}
+        </ul>
+        <p>Si no tienes un CSV con estas columnas, puedes descargar una plantilla para completar:</p>
+        <p>
+            <a class="btn" href="{{ url_for('download_template', dataset=dataset, mode='minimal') }}">Descargar plantilla minimal (CSV)</a>
+            <a class="btn" href="{{ url_for('download_template', dataset=dataset, mode='full') }}">Descargar plantilla full (CSV)</a>
+        </p>
+        {% if minimal_available %}
+        <p class="ok">El modelo compacto está disponible en el servidor.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <form class="csv-form" method="post" enctype="multipart/form-data">
+        <div class="form-row">
+            <input type="file" name="csv_file" accept=".csv" required>
+        </div>
+        {% if features_required %}
+        <div class="form-row checkbox-row">
+            <label>
+                <input type="checkbox" name="use_minimal" value="1" checked>
+                Usar modelo compacto (reentrenado con {{ minimal_feature_count }} variables)
+            </label>
+        </div>
+        {% endif %}
+        <div class="form-row">
+            <button type="submit" class="btn primary">Subir y predecir</button>
+        </div>
+    </form>
+
+    {% if full_features %}
+    <div class="note">
+        <p><strong>Variables usadas por el modelo completo (top {{ full_features|length }}):</strong></p>
+        <p class="muted small">{{ full_features|join(', ') }}</p>
+        <p>Si faltan columnas al subir un CSV, el servidor rellenará columnas numéricas faltantes con medianas para poder predecir.</p>
+        <p>Descarga el archivo de ejemplo para este dataset: <a href="{{ sample_url }}">sample_{{ dataset }}.csv</a> o usa la plantilla completa:
+            <a class="btn" href="{{ url_for('download_template', dataset=dataset, mode='full') }}">Descargar plantilla full</a>
+        </p>
+    </div>
+    {% endif %}
+
+    {% if sample_preview_html %}
+    <style>
+        /* Estilos SÓLO para el sample preview */
+        #sample-wrapper {
+        overflow: auto;          /* scroll horizontal y vertical */
+        max-width: 100%;
+        height: 60vh;            /* alto visible; ajusta si quieres */
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 4px;
+        }
+        #sample-wrapper table {
+        width: max-content;      /* fuerza scroll horizontal si hay muchas columnas */
+        border-collapse: collapse;
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        }
+        #sample-wrapper th, #sample-wrapper td {
+        white-space: nowrap;     /* evita que el texto rompa línea */
+        padding: 6px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        }
+        #sample-wrapper thead th {
+        position: sticky;        /* encabezado fijo al hacer scroll vertical */
+        top: 0;
+        background: #fafafa;
+        z-index: 1;
+        border-bottom: 1px solid #e5e5e5;
+        }
+        /* zebra opcional */
+        #sample-wrapper tbody tr:nth-child(odd) { background: #fff; }
+        #sample-wrapper tbody tr:nth-child(even){ background: #fcfcfc; }
+    </style>
+
+    <!-- SOLO la tabla -->
+    <div id="sample-wrapper">
+        {{ sample_preview_html | safe }}
+    </div>
+
+    <script>
+        (function () {
+        const wrapper = document.getElementById('sample-wrapper');
+        if (!wrapper) return;
+
+        // Busca la primera tabla dentro del wrapper (la que genera pandas .to_html)
+        const table = wrapper.querySelector('table');
+        if (!table) return;
+
+        const tbody = table.tBodies && table.tBodies[0];
+        if (!tbody) return;
+
+        const rows = Array.from(tbody.rows);
+        const PAGE = 20;       // número de filas por "tanda"
+        let shown = 0;
+
+        // Oculta todas las filas inicialmente
+        rows.forEach(r => r.style.display = 'none');
+
+        // Muestra el siguiente bloque de filas
+        function showNext() {
+            const next = Math.min(shown + PAGE, rows.length);
+            for (let i = shown; i < next; i++) rows[i].style.display = '';
+            shown = next;
+        }
+
+        // Carga inicial (primeras 20 filas)
+        showNext();
+
+        // Al acercarse al fondo del contenedor, muestra 20 filas más
+        function maybeLoadMore() {
+            const nearBottom = wrapper.scrollTop + wrapper.clientHeight >= wrapper.scrollHeight - 80;
+            if (nearBottom && shown < rows.length) showNext();
+        }
+
+        wrapper.addEventListener('scroll', maybeLoadMore);
+        })();
+    </script>
+    {% endif %}
+
+</section>
+{% endblock %}

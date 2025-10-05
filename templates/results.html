@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Resultados{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            pageLength: 10,
+            responsive: true
+        });
+    });
+</script>
+{% endblock %}
+{% block content %}
+<section>
+    <h2>Resultados</h2>
+    {% if pipeline_used %}
+    <div class="callout info">
+        <strong>Pipeline usado:</strong> {{ pipeline_used }}
+    </div>
+    {% endif %}
+
+    <div class="cards">
+        <div class="card small">
+            <h4>Predicciones</h4>
+            {% if summary %}
+            <ul class="summary-list">
+                {% for k,v in summary.items() %}
+                    <li>{{ k }}: <strong>{{ v }}</strong></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No hay resumen disponible.</p>
+            {% endif %}
+        </div>
+        <div class="card">
+            <h4>Features usados</h4>
+            {% if features_used %}
+            <p class="muted small">{{ features_used|join(', ') }}</p>
+            {% else %}
+            <p>No hay features listadas.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="callout note">
+        <strong>Nota:</strong> El servidor ha usado el pipeline de boosting si estaba disponible para el dataset. Cada pipeline incluye imputación y escalado, por lo que no necesitas subir un CSV preprocesado.
+    </div>
+
+    <div class="table-wrap">
+        <table id="myTable" class="display stripe" style="width:100%;">
+            <thead>
+                <tr>
+                    {% for col in df.columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in df.values %}
+                    <tr>
+                        {% for cell in row %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    // Supón que df es tu DataFrame de entrada
+    // X_proc = ... (preprocesa df)
+    // pred = modelo.predict(X_proc)
+    df['is_exoplanet_pred'] = pred  // Agrega la columna de predicción
+</script>
+{% endblock %}
